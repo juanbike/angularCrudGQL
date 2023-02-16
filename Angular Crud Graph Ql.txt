@@ -1,0 +1,487 @@
+Instalar Bootstrap
+------------------
+npm i bootstrap@5.3.0-alpha1
+
+
+Configurar Bootstrap
+--------------------
+Angular.json
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "angular15-grapql-crud": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/angular15-grapql-crud",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angular15-grapql-crud:build:production"
+            },
+            "development": {
+              "browserTarget": "angular15-grapql-crud:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angular15-grapql-crud:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}
+
+
+Instalar Graph QL
+--------------------
+ng add apollo-angular
+
+
+
+Instalar Json server Graph QL
+-----------------------------
+npm install -g json-graphql-server
+
+Creamos un db.json en la carpeta root del proyecto
+-----------------------------------------------------
+module.exports = {
+    fruits:[
+        {
+            id:1,
+            name: "mango",
+            cantidad: 23,
+            precio: 12
+        }
+    ]
+}
+
+
+Configuramos el servidor json en packet.json
+--------------------------------------------
+{
+  "name": "angular15-grapql-crud",
+  "version": "0.0.0",
+  "scripts": {
+    "gql-server": "json-graphql-server db.js",
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^15.0.0",
+    "@angular/common": "^15.0.0",
+    "@angular/compiler": "^15.0.0",
+    "@angular/core": "^15.0.0",
+    "@angular/forms": "^15.0.0",
+    "@angular/platform-browser": "^15.0.0",
+    "@angular/platform-browser-dynamic": "^15.0.0",
+    "@angular/router": "^15.0.0",
+    "apollo-angular": "^4.2.1",
+    "bootstrap": "^5.3.0-alpha1",
+    "rxjs": "~7.5.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.12.0",
+    "@apollo/client": "^3.0.0",
+    "graphql": "^16"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^15.0.2",
+    "@angular/cli": "~15.0.2",
+    "@angular/compiler-cli": "^15.0.0",
+    "@types/jasmine": "~4.3.0",
+    "jasmine-core": "~4.5.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.0.0",
+    "typescript": "~4.8.2"
+  }
+}
+
+Abrimos una consola y ejecutamos Gql-server
+-------------------------------------------
+> npm run gql-server
+
+En el browser:
+-------------
+localhost:3000
+
+
+Ejecutamos el query
+-------------------
+Consulta All
+------------
+query{
+  allFruits{
+    id
+    cantidad
+    precio
+    name
+  }
+}
+
+respuesta
+---------
+{
+  "data": {
+    "allFruits": [
+      {
+        "id": "1",
+        "cantidad": 23,
+        "precio": 12,
+        "name": "mango"
+      }
+    ]
+  }
+}
+
+
+Data en mi db.js
+----------------
+module.exports = {
+    fruits:[
+        {
+            id:1,
+            name: "mango",
+            cantidad: 23,
+            precio: 12
+        }
+    ]
+}
+
+Solo quiero algunas propiedades en la consulta
+----------------------------------------------
+Consulta
+--------
+query{
+  allFruits{
+    id
+    cantidad
+   
+  }
+}
+
+Respuesta:
+----------
+{
+  "data": {
+    "allFruits": [
+      {
+        "id": "1",
+        "cantidad": 23
+      }
+    ]
+  }
+}
+
+
+Agregamos una Fruta
+-------------------
+mutation($name:String!, $cantidad:Int!, $precio:Int!){
+  createFruit(name:$name, cantidad:$cantidad, precio:$precio){
+    id,
+    name,
+    cantidad,
+    precio
+  }
+}
+
+Variable en el query
+--------------------
+{
+  "name": "Melones",
+  "cantidad": 34,
+  "precio": 23
+}
+
+Respuesta del servidor
+----------------------
+{
+  "data": {
+    "createFruit": {
+      "id": "2",
+      "name": "Melones",
+      "cantidad": 34,
+      "precio": 23
+    }
+  }
+}
+
+Copiamos la url del endpoint y la pegamos en grapql Module
+-----------------------------------------------------------
+import {NgModule} from '@angular/core';
+import {ApolloModule, APOLLO_OPTIONS} from 'apollo-angular';
+import {ApolloClientOptions, InMemoryCache} from '@apollo/client/core';
+import {HttpLink} from 'apollo-angular/http';
+
+const uri = 'http://localhost:3000/'; // <-- add the URL of the GraphQL server here
+export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
+  return {
+    link: httpLink.create({uri}),
+    cache: new InMemoryCache(),
+  };
+}
+
+@NgModule({
+  exports: [ApolloModule],
+  providers: [
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory: createApollo,
+      deps: [HttpLink],
+    },
+  ],
+})
+export class GraphQLModule {}
+
+
+-------------------------------------------------------------------------------------
+Recuperamos todas las frutas en un formulario de angular
+https://www.youtube.com/watch?v=ljlGauovWXk
+-------------------------------------------------------------------------------------
+
+Creamos un enrutador para el modulo de frutas
+---------------------------------------------
+app> ng generate  module /modules/fruits --routing 
+CREATE src/app/modules/fruits/fruits-routing.module.ts (249 bytes)
+CREATE src/app/modules/fruits/fruits.module.ts (280 bytes)
+
+
+fruits-routing.module.ts
+------------------------
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+
+const routes: Routes = [{
+  
+}
+  
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FruitsRoutingModule { }
+
+
+Se actualiza el app.module.ts con el modulo de frutas automaticamente
+--------------------------------------------------------------------
+app.module.ts
+-------------
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
+import { FruitsModule } from './modules/fruits/fruits.module';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    GraphQLModule,
+    HttpClientModule,
+    FruitsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+Agregamos el Lazy loading al modulo, la ruta en app.module.
+-----------------------------------------------------------
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [{
+  path:'',
+  loadChildren: () => import('./modules/fruits/fruits.module').then(_ => _.FruitsModule)
+}];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+
+
+Creamos el componente Home
+--------------------------
+ng generate component modules/home --skip-import
+CREATE src/app/modules/home/home.component.html (19 bytes)
+CREATE src/app/modules/home/home.component.spec.ts (585 bytes)
+CREATE src/app/modules/home/home.component.ts (194 bytes)
+CREATE src/app/modules/home/home.component.css (0 bytes)
+
+Agregamos el componente Home a el Router del modulo de frutas
+-------------------------------------------------------------
+
+fruits-routing.module.ts
+------------------------
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from '../home/home.component';
+
+const routes: Routes = [{
+  path: '',
+  component: HomeComponent
+}
+  
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FruitsRoutingModule { }
+
+Creamos una interface para el modelo de frutas
+----------------------------------------------
+ng generate interface modules/interface/fruits  
+CREATE src/app/modules/interface/fruits.ts (28 bytes)
+
+fruits.ts
+---------
+export interface Fruits {
+        id:number,
+        name: string,
+        cantidad: number,
+        precio: number
+
+}
+
+Creamos una consulta Query graphQL en el HomeComponent (5:38)
+-------------------------------------------------------------
+Vamos al navegador y abrimos un playground de graphQL y creamos un modelo de una consulta:
+http://localhost:3000/
+http://localhost:3000/?query=query%7B%0A%20%20allFruits%7B%0A%20%20%20%20id%0A%20%20%20%20name%0A%20%20%20%20cantidad%0A%20%20%20%20precio%0A%20%20%7D%0A%7D
+
+query{
+  allFruits{
+    id
+    name
+    cantidad
+    precio
+  }
+}
+
+
+Vamos a guadar la consulta en una clase de nuestro proyecto de angular (7:41
+----------------------------------------------------------------------------
+ng generate class  modules/gql/fruits-query --skip-tests
+CREATE src/app/modules/gql/fruits-query.ts (29 bytes)
+
+fruits-query.ts
+---------------
+import { gql } from "apollo-angular";
+
+export const GET_Fruits = gql ` query{
+    query{
+        allFruits{
+          id
+          name
+          cantidad
+          precio
+        }
+      }
+}` 
+
+En la clase del HomeComponent necesitamos llamar a la API cuando se cargar el componente y necesitamos inyectar el servicio
+----------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
